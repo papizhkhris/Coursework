@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналіз</title>
+    <script type="text/javascript" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <style>
+      th, td{
+        padding: .5em;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Concordance -->
+    <div>
+      <h2 align="center">АНАЛІЗ УЗГОДЖЕНОСТІ СУДДІВСТВА КОНКУРСУ</h2>
+      <h3 align="center">Файл з оцінками членів жюрі: {{contest.filename}}</h3>
+  
+      <table border="1" class="dataframe" align="center">
+        <tr align="center" style="text-align: center;">
+          <th align="center">Учасники</th>
+          {% for header in contest.headers %}
+          <th>{{header}}</th>
+          {% endfor%}
+        </tr>
+        {% for col in contest.entries %}
+        <tr align="center">
+          {% for cell in range(0,contest.m) %}
+            <td>{{ col[cell] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+  
+      <h5 align="center">Значення коефіцієнта конкордації: {{contest.concordance}}.</h5>
+	  <h5 align="center">Значення коефіцієнта конкордації 2: {{contest.concordance_2}}.</h5>
+      <h5 align="center">Узгодженість думок експертів {{contest.distribution}}.</h5>  
+    </div>
+	<!-- Group Thoughts -->
+    <div>
+      <h2 align="center">ВИЗНАЧЕННЯ ГРУПОВИХ ДУМОК</h2>
+      
+    </div>
+	
+    <!-- Spearman Coeficients -->
+    <div>
+      <h3 align="center">РОЗРАХУНОК КОЕФІЦІЄНТІВ СПІРМЕНА І ПЕРЕВІРКА ЗНАЧУЩОСТІ КОРЕЛЯЦІЙНОГО
+        ЗВ’ЯЗКУ МІЖ РЕЙТИНГАМИ ЕКСПЕРТІВ</h3>
+
+      <table border="1" class="dataframe" align="center">
+        <tr align="center">
+          <th>\(i\)</th>
+          <th>\(j\)</th>
+          <th>\(\rho_{ij}\)</th>
+          <th>\(t({{contest.alpha}}; {{contest.k}})\)</th>
+          <th>\(T_{ij}\)</th>
+          <th>Значимість \(|\rho_{ij}| > T_{ij}\)</th>
+        </tr>
+        {% for row in contest.spearman.iterrows() %}
+          <tr align="center">
+          {% for cell in row[1] %}
+            <td align="center">
+              {{ cell }}
+            </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+	  <h5 align="center">Близькими є думки експертів: 1-го та 3-го, 2-го та 4-го.</h1>
+    </div>
+
+        <!-- Disident Thoughts -->
+        <div>
+          <h1 align="center">АНАЛІЗ НА ДИСИДЕНТСЬКІ ДУМКИ</h1>
+    
+          <table border="1" class="dataframe" align="center">
+            <tr align="center">
+              <th align="center" >Виключений експерт</th>
+              <th align="center">Коеф. конкордації</th>
+              <th align="center">Значущість</th>
+              <th align="center">Зміна переможця</th>
+              <th align="center">К-сть змін у рейтингу</th>
+            {% for row in contest.dissidents %}
+              <tr align="center">
+                <td align="center" >{{row.expert}}</td>
+                <td align="center" >{{row.concordance}} ({{ row.concordance_change}})</td>
+                <td align="center" >{{row.importance}}</td>
+                <td align="center">{{row.winner_change}}</td>
+                <td align="center">{{row.change_amount}}</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div style="height: 500px;"></div>
+
+  </body>
+</html>
